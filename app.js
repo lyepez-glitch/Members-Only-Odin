@@ -104,8 +104,60 @@ app.get("/log-out", (req, res, next) => {
 app.get("/signUp", (req, res) => {
     res.render("signUp", {});
 });
-app.post("/signUp", async(req, res) => {
+const lengthErr = "must be between 1 and 20 characters.";
+const validateFirstName = [
+    body("fname", "Must be a valid name")
+    .trim()
+    .notEmpty()
+    .withMessage("First name can't be empty")
+    .isAlpha()
+    .withMessage("Name must only contain alphabet letters.")
+    .isLength({ min: 1, max: 20 }).withMessage(`First name ${lengthErr}`),
+];
+const validateLastName = [
+    body("lname", "Must be a valid last name")
+    .trim()
+    .notEmpty()
+    .withMessage("Last name can't be empty")
+    .isAlpha()
+    .withMessage("Last Name must only contain alphabet letters.")
+
+];
+const validateUsername = [
+    body("email", "Must be a valid username")
+    .trim()
+    .notEmpty()
+    .withMessage("User name can't be empty")
+
+
+];
+const validatePassword = [
+    body("password", "Must be a valid password")
+    .trim()
+    .notEmpty()
+    .withMessage("Password can't be empty")
+
+
+];
+app.post("/signUp", validateFirstName, validateLastName, validateUsername, validatePassword, body('password').isLength({ min: 5 }), body('confirmPassword').custom((value, { req }) => {
+    console.log('value', value, 'req.body.password', req.body.password)
+    if (value !== req.body.password) {
+        throw new Error("Passwords do not match");
+    };
+    return true;
+}), async(req, res) => {
     // console.log("req body", req.body)
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        console.log('errors', errors)
+        return res.status(400).render("signUp", {
+            title: "Create user",
+            errors: errors.array(),
+        });
+    }
+
+
 
     let { fname, lname, email, password, confirmPassword, admin } = req.body;
     bcrypt.hash(password, 10, async(err, hashedPassword) => {
