@@ -1,0 +1,24 @@
+<!-- catIndex.ejs -->
+<html>
+  <head>
+    <title>Member Sign Up</title>
+
+     <link href="styles.css" rel="stylesheet">
+  </head>
+  <body >
+
+     <%- include("partials/errors.ejs") %>
+    <form action="/memberStatus?id=<%= id %>" method="post" class="form-example">
+    <div class="form-example">
+      <label for="secret">Enter in secret code: </label>
+      <input type="text" name="secret" id="secret" required />
+    </div>
+
+
+    <div class="form-example">
+      <input type="submit" value="Join the member Club" />
+    </div>
+</form
+
+  </body>
+</html>

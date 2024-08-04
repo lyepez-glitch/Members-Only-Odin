@@ -12,7 +12,9 @@ async function main() {
     });
     await client.connect();
 
-    console.log("done");
+    console.log("done", `postgresql://${process.env.ROLE}:${process.env.PASSWORD}@localhost:${process.env.PORT}/${process.env.DATABASE}`);
+    let dropMessagesTable = `DROP TABLE IF EXISTS messages`;
+    await client.query(dropMessagesTable);
     let dropUsersTable = `DROP TABLE IF EXISTS users;`;
     await client.query(dropUsersTable);
     let createUsers = `
@@ -22,21 +24,19 @@ async function main() {
        lastName VARCHAR(100),
        username VARCHAR(100),
        password VARCHAR(100),
-       memberStatus VARCHAR(100)
-     )`
-    await client.query(createUsers);
+       admin BOOLEAN DEFAULT FALSE,
+       memberStatus BOOLEAN DEFAULT FALSE)`
 
     let createMessages = `CREATE TABLE messages(
        title VARCHAR(100),
        timestamp DATE,
        text TEXT,
+       id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
        user_id INTEGER,
-       createdBy VARCHAR(100),
-       FOREIGN KEY (user_id)
-       REFERENCES users(id)
-       ON DELETE CASCADE
-     )`
+       createdBy VARCHAR(100))`
     await client.query(createMessages);
+    await client.query(createUsers);
+
 
     //             cat = await client.query(qry, [product.category]);
     //     try {
@@ -93,11 +93,11 @@ async function main() {
     //     } catch (error) {
     //         console.error('Error fetching products: ', error);
     //     } finally {
-    //         try {
-    //             await client.end();
-    //         } catch (e) {
-    //             console.log('err', e.message)
-    //         }
+    try {
+        await client.end();
+    } catch (e) {
+        console.log('err', e.message)
+    }
 
     //     }
 }

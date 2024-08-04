@@ -1,0 +1,30 @@
+<!-- message.ejs -->
+<html>
+  <head>
+    <title>Create message</title>
+
+     <link href="styles.css" rel="stylesheet">
+  </head>
+  <body>
+
+     <%- include("partials/errors.ejs") %>
+    <form action="/message?id=<%= id %>"  method="post" class="form-example">
+     <div class="form-example">
+      <label for="title">Enter title: </label>
+      <input type="text" name="title" id="title" required />
+    </div>
+
+    <div class="form-example">
+      <label for="text">Enter message: </label>
+      <input type="text" name="text" id="text" required />
+    </div>
+
+
+
+    <div class="form-example">
+      <input type="submit" value="Send" />
+    </div>
+</form
+
+  </body>
+</html>

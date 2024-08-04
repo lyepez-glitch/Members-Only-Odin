@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+
+<% messages.forEach(function(msg) { %>
+  <div> Title: <%= msg.title %> </div>
+ <div> Text: <%= msg.text %> </div>
+    <% if (user) { %>
+
+      <% if (user.memberstatus || user.admin) { %>
+        <div> Author: <%= msg.createdby %> </div>
+        <div> Date: <%= msg.timestamp %> </div>
+      <% } %>
+      <% if (user && user.admin) { %>
+        <a href="/message/delete/<%= msg.id %>">Delete message</a>
+      <% } %>
+    <% } %>
+  </div>
+<% }); %>
+
+<% if (user) { %>
+  <a href="/memberStatus?id=<%= user.id %>">Become a member</a>
+  <h1>WELCOME BACK <%= user.username %></h1>
+  <a href="/message?id=<%= user.id %>">Create a new message</a>
+  <a href="/log-out">LOG OUT</a>
+<% } else { %>
+  <h1>Please log in</h1>
+  <form action="/log-in" method="POST">
+    <label for="username">Username</label>
+    <input id="username" name="username" placeholder="username" type="text" />
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" />
+    <button>Log In</button>
+  </form>
+  <a href="/signUp">Sign Up</a>
+<% } %>
+
+</body>
+</html>
